@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "719170211909",
+    "project_id": "recordr-f2608",
+    "storage_bucket": "recordr-f2608.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719170211909:android:b76c0261fded8f49f1932c",
+        "android_client_info": {
+          "package_name": "com.threebanders.recordr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "719170211909-be795n3kdsd3g9k2pjocksen12aimtbs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.threebanders.recordr",
+            "certificate_hash": "e363d0e3a05aa295381ea2d2a993149655ad9201"
+          }
+        },
+        {
+          "client_id": "719170211909-jrgn0g01i4kchs5ltmbbrsude6cmorug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.threebanders.recordr",
+            "certificate_hash": "058ec66bcd7c2f696c9852a3febc0581b1c8e334"
+          }
+        },
+        {
+          "client_id": "719170211909-ph107vb4s5q9fpk228fchfb7mc5hcr0b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.threebanders.recordr",
+            "certificate_hash": "cdec0ce90502856a5741e4939377fab60d69f4a1"
+          }
+        },
+        {
+          "client_id": "719170211909-23adcofih13f6p14o37rpiv4jk0lsr0n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQL5SHAqPT0YxkIo3SBJ05I6GFWGT4_k0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "719170211909-23adcofih13f6p14o37rpiv4jk0lsr0n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,34 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'core.threebanders.recordr'
+    compileSdk 33
+    defaultConfig {
+        minSdk 21
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.media:media:1.6.0'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.4'
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    implementation "ch.acra:acra-http:5.5.0"
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+}

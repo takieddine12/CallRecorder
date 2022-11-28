@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/bottom_nav_unassigned"
+        android:icon="@drawable/sound_bottom"
+        android:title="@string/bottom_nav_recordings" />
+    <item
+        android:id="@+id/bottom_nav_contacts"
+        android:icon="@drawable/user_bottom"
+        android:title="@string/bottom_nav_contacts"
+        android:visible="false" />
+</menu>
