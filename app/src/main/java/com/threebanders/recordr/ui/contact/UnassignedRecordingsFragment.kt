@@ -1,14 +1,20 @@
 package com.threebanders.recordr.ui.contact
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
+import android.telephony.TelephonyManager
+import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +30,11 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Constants
+import com.threebanders.recordr.receiver.UploadFileReceiver
+import com.threebanders.recordr.services.RecordUploadService
+import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
+import com.threebanders.recordr.ui.MainViewModel
 import com.threebanders.recordr.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
 import core.threebanders.recordr.Cache
 import core.threebanders.recordr.data.Recording
@@ -77,7 +87,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                 paintViews()
 
                 if (recordings?.size != 0) {
-
                     var list = getDataFromSharedPreferences()
                     if (list == null)
                         list = arrayListOf()
@@ -100,7 +109,16 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         mainViewModel.deletedRecording.observe(viewLifecycleOwner) { removeRecording() }
         removeRecording()
 
+
         return rootView
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intentFilter  = IntentFilter()
+        intentFilter.addAction("android.intent.action.PHONE_STATE")
+        intentFilter.addAction("android.intent.action.NEW_OUTGOING_CALL")
+        requireActivity().registerReceiver(uploadFileReceiver, intentFilter)
     }
 
     private fun getDataFromSharedPreferences(): List<Recording?>? {
@@ -214,5 +232,36 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         infoBtn!!.setOnClickListener { onRecordingInfo() }
     }
 
+    private  var uploadFileReceiver = object :  BroadcastReceiver() {
+        var prevState = TelephonyManager.EXTRA_STATE_IDLE
+        override fun onReceive(context: Context?, intent: Intent?) {
+            // check if call end
+            val bundle = intent!!.extras ?: return
+            val state = bundle.getString(TelephonyManager.EXTRA_STATE)
 
+            val  list = getDataFromSharedPreferences()
+            if (state == TelephonyManager.EXTRA_STATE_IDLE && prevState == TelephonyManager.EXTRA_STATE_IDLE) {
+               mainViewModel.records.observeForever{ recordingsList ->
+                   Log.d("LOG","Recording Receiver is " + recordingsList!![0]?.path)
+                   val serviceIntent  = Intent(context,RecordUploadService::class.java)
+                   serviceIntent.putExtra("recording",recordingsList!![0]?.path.toString())
+                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                       context!!.startForegroundService(serviceIntent)
+                   } else {
+                       context!!.startService(serviceIntent)
+                   }
+               }
+
+            }
+
+            prevState = state
+        }
+
+
+    }
+
+    override fun onDestroy() {
+        requireActivity().unregisterReceiver(uploadFileReceiver)
+        super.onDestroy()
+    }
 }

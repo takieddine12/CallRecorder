@@ -162,16 +162,7 @@
 
        <service android:name=".services.RecordUploadService"
            android:exported="false"/>
-
-        <receiver
-            android:name=".receiver.UploadFileReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE" />
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-            </intent-filter>
-        </receiver>
+        
 
         <meta-data
             android:name="com.startapp.sdk.APPLICATION_ID"
