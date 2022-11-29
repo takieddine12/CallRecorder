@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.IBinder
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
@@ -47,14 +48,11 @@ class RecordUploadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        mainViewModel.records.observeForever {
-          // val recording = intent?.getStringExtra("recording")
-            if(it.size != 0){
-                uploadFileToGDrive(File(it[0].path))
-                showNotification()
-            }
+        val recording = intent?.getStringExtra("recording")
+        if(recording != null){
+            uploadFileToGDrive(File(recording))
+            showNotification()
         }
-
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -128,7 +126,7 @@ class RecordUploadService : Service() {
 
         val notification: Notification = NotificationCompat.Builder(this, Extras.NOTIFICATION_ID)
             .setContentTitle("Upload")
-            .setContentText("Uploading File to google drivce")
+            .setContentText("File uploaded successfully...")
             .setSmallIcon(R.drawable.ic_baseline_circle_notifications_24)
             .setContentIntent(pendingIntent)
             .build()

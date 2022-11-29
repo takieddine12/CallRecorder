@@ -6,8 +6,10 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.telephony.TelephonyManager
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.CrApp
@@ -42,15 +44,14 @@ class UploadFileReceiver : BroadcastReceiver() {
             mainViewModel.loadRecordings()
             mainViewModel.records.observeForever { recordings ->
                if (list?.size != recordings?.size){
-                  CoroutineScope(Dispatchers.Main).launch {
-                      val serviceIntent  = Intent(context,RecordUploadService::class.java)
-                      intent.putExtra("recording", recordings[0].path)
-                      if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                          context!!.startForegroundService(serviceIntent)
-                      } else {
-                          context!!.startService(serviceIntent)
-                      }
-                  }
+                   Log.d("LOG","Recording Receiver is " + recordings[0].path)
+                   val serviceIntent  = Intent(context,RecordUploadService::class.java)
+                   serviceIntent.putExtra("recording", recordings[0].path.toString())
+                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                       context!!.startForegroundService(serviceIntent)
+                   } else {
+                       context!!.startService(serviceIntent)
+                   }
                }
             }
 
