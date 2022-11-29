@@ -47,8 +47,6 @@ class RecordUploadService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-
         mainViewModel.records.observeForever {
           // val recording = intent?.getStringExtra("recording")
             if(it.size != 0){
