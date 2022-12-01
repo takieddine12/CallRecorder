@@ -1,6 +1,7 @@
 package core.threebanders.recordr.recorder;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +34,7 @@ class RecordingThreadWav extends RecordingThread implements Runnable {
                 }
 
                 outputStream.write(data);
+                Log.d("TAG V","file is " + tmpFile.getAbsolutePath());
             }
         } catch (RecordingException | IOException e) {
             if (!tmpFile.delete()) {

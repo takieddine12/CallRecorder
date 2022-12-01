@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProviders
@@ -53,6 +54,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private var file: File? = null
     private var fileName: String = ""
     private val FOLDER_NAME = Constants.APP_NAME
+    private var isGoogleDriveSynced = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,12 +96,13 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                     getDataFromSharedPreferences()
 
                     val settings = baseActivity?.prefs
-                    val isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)
+                    isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)!!
 
-                    if (isGoogleDriveSynced!! && list.size != recordings?.size) {
-                        file = File(recordings?.get(0)?.path.toString())
-                        fileName = recordings?.get(0)?.dateRecord.toString()
-                    }
+//                    if (isGoogleDriveSynced && list.size != recordings?.size) {
+//                        file = File(recordings?.get(0)?.path.toString())
+//                        fileName = recordings?.get(0)?.dateRecord.toString()
+//                        uploadFileToGDrive(File(recordings?.get(0)?.path.toString()))
+//                    }
 
                     setDataFromSharedPreferences(recordings as List<Recording?>)
                 }
@@ -113,13 +116,7 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         return rootView
     }
 
-    override fun onStart() {
-        super.onStart()
-        val intentFilter  = IntentFilter()
-        intentFilter.addAction("android.intent.action.PHONE_STATE")
-        intentFilter.addAction("android.intent.action.NEW_OUTGOING_CALL")
-        requireActivity().registerReceiver(uploadFileReceiver, intentFilter)
-    }
+
 
     private fun getDataFromSharedPreferences(): List<Recording?>? {
         val gson = Gson()
@@ -230,38 +227,5 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
         selectAllBtn!!.setOnClickListener { onSelectAll() }
         val infoBtn = baseActivity?.findViewById<ImageButton>(R.id.actionbar_info)
         infoBtn!!.setOnClickListener { onRecordingInfo() }
-    }
-
-    private  var uploadFileReceiver = object :  BroadcastReceiver() {
-        var prevState = TelephonyManager.EXTRA_STATE_IDLE
-        override fun onReceive(context: Context?, intent: Intent?) {
-            // check if call end
-            val bundle = intent!!.extras ?: return
-            val state = bundle.getString(TelephonyManager.EXTRA_STATE)
-
-            val  list = getDataFromSharedPreferences()
-            if (state == TelephonyManager.EXTRA_STATE_IDLE && prevState == TelephonyManager.EXTRA_STATE_IDLE) {
-               mainViewModel.records.observeForever{ recordingsList ->
-                   Log.d("LOG","Recording Receiver is " + recordingsList!![0]?.path)
-                   val serviceIntent  = Intent(context,RecordUploadService::class.java)
-                   serviceIntent.putExtra("recording",recordingsList!![0]?.path.toString())
-                   if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                       context!!.startForegroundService(serviceIntent)
-                   } else {
-                       context!!.startService(serviceIntent)
-                   }
-               }
-
-            }
-
-            prevState = state
-        }
-
-
-    }
-
-    override fun onDestroy() {
-        requireActivity().unregisterReceiver(uploadFileReceiver)
-        super.onDestroy()
     }
 }

@@ -6,6 +6,9 @@ import static android.media.MediaRecorder.AudioSource.VOICE_COMMUNICATION;
 import static android.media.MediaRecorder.AudioSource.VOICE_RECOGNITION;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
 
 import org.acra.ACRA;
 
@@ -18,6 +21,7 @@ import core.threebanders.recordr.Cache;
 import core.threebanders.recordr.Core;
 
 public class Recorder {
+
     public static final String WAV_FORMAT = "wav";
     public static final String AAC_HIGH_FORMAT = "aac_hi";
     public static final String AAC_MEDIUM_FORMAT = "aac_med";
@@ -99,6 +103,7 @@ public class Recorder {
                 Thread copyPcmToWav = new Thread(new RecordingThreadWav.CopyPcmToWav(context,
                         audioFile, mode, this));
                 copyPcmToWav.start();
+                saveAudioFilePath(audioFile.getAbsolutePath());
             }
         }
     }
@@ -141,4 +146,12 @@ public class Recorder {
     void setHasError() {
         this.hasError = true;
     }
+
+    private void saveAudioFilePath(String audioPath){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("audioPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("audioPath",audioPath);
+        editor.apply();
+    }
 }
+
