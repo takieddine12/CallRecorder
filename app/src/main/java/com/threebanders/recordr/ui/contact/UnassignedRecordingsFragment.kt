@@ -1,48 +1,26 @@
 package com.threebanders.recordr.ui.contact
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
-import android.telephony.TelephonyManager
-import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.api.client.extensions.android.http.AndroidHttp
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.google.api.client.http.FileContent
-import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.services.drive.Drive
-import com.google.api.services.drive.DriveScopes
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.threebanders.recordr.R
 import com.threebanders.recordr.common.Constants
-import com.threebanders.recordr.receiver.UploadFileReceiver
-import com.threebanders.recordr.services.RecordUploadService
-import com.threebanders.recordr.ui.BaseActivity
 import com.threebanders.recordr.ui.BaseActivity.LayoutType
-import com.threebanders.recordr.ui.MainViewModel
 import com.threebanders.recordr.ui.settings.SettingsFragment.Companion.GOOGLE_DRIVE
 import core.threebanders.recordr.Cache
 import core.threebanders.recordr.data.Recording
 import core.threebanders.recordr.recorder.Recorder
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.lang.reflect.Type
 
@@ -53,7 +31,6 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
     private var editor: SharedPreferences.Editor? = null
     private var file: File? = null
     private var fileName: String = ""
-    private val FOLDER_NAME = Constants.APP_NAME
     private var isGoogleDriveSynced = false
 
     override fun onCreateView(
@@ -98,11 +75,10 @@ class UnassignedRecordingsFragment : ContactDetailFragment() {
                     val settings = baseActivity?.prefs
                     isGoogleDriveSynced = settings?.getBoolean(GOOGLE_DRIVE, false)!!
 
-//                    if (isGoogleDriveSynced && list.size != recordings?.size) {
-//                        file = File(recordings?.get(0)?.path.toString())
-//                        fileName = recordings?.get(0)?.dateRecord.toString()
-//                        uploadFileToGDrive(File(recordings?.get(0)?.path.toString()))
-//                    }
+                    if (isGoogleDriveSynced && list.size != recordings?.size) {
+                        file = File(recordings?.get(0)?.path.toString())
+                        fileName = recordings?.get(0)?.dateRecord.toString()
+                    }
 
                     setDataFromSharedPreferences(recordings as List<Recording?>)
                 }

@@ -162,12 +162,12 @@
             </intent-filter>
         </receiver>
 
-       <service android:name=".services.RecordUploadService"
-           android:exported="false"/>
+
 
         <receiver android:name=".receiver.UploadFileReceiver"
             android:exported="false">
             <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE"/>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
             </intent-filter>
         </receiver>
